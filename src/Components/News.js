@@ -70,7 +70,7 @@ const News =(props)=> {
         };
     
         fetchData();
-    }, []);
+    }, [props.category, updateNews]);
     
 
     // async componentDidMount() {
