@@ -42,7 +42,7 @@ const News =(props)=> {
 
 
 
-    const updateNews=async()=> {
+    const updateNews=useCallback(async()=> {
         props.setprogress(10);
         const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apikey}&page=${page}&pageSize=${props.pageSize}`;
         // this.setState({ loading: true });
@@ -60,7 +60,7 @@ const News =(props)=> {
         //     loading: false
         // })
         props.setprogress(100);
-    }
+    }, [props.category]);
 
 
     useEffect(() => {
@@ -70,7 +70,7 @@ const News =(props)=> {
         };
     
         fetchData();
-    }, [props.category, updateNews]);
+    }, [updateNews]);
     
 
     // async componentDidMount() {
