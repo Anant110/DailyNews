@@ -197,8 +197,6 @@
 // export default News
 
 
-
-
 import React, { useState, useEffect } from 'react';
 import Newsitem from './Newsitem';
 import Spinner from './Spinner';
@@ -219,12 +217,18 @@ const News = (props) => {
         props.setprogress(10);
         const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apikey}&page=${page}&pageSize=${props.pageSize}`;
         setLoading(true);
-        let data = await fetch(url);
-        props.setprogress(30);
-        let parseddata = await data.json();
-        props.setprogress(50);
-        setArticles(parseddata.articles);
-        setTotalResults(parseddata.totalResults);
+        try {
+            let data = await fetch(url);
+            props.setprogress(30);
+            let parseddata = await data.json();
+            props.setprogress(50);
+            setArticles(parseddata.articles || []);
+            setTotalResults(parseddata.totalResults || 0);
+        } catch (error) {
+            console.error('Error fetching the news data', error);
+            setArticles([]);
+            setTotalResults(0);
+        }
         setLoading(false);
         props.setprogress(100);
     };
@@ -238,10 +242,14 @@ const News = (props) => {
     const fetchMoreData = async () => {
         const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apikey}&page=${page + 1}&pageSize=${props.pageSize}`;
         setPage(page + 1);
-        let data = await fetch(url);
-        let parseddata = await data.json();
-        setArticles(articles.concat(parseddata.articles));
-        setTotalResults(parseddata.totalResults);
+        try {
+            let data = await fetch(url);
+            let parseddata = await data.json();
+            setArticles(articles.concat(parseddata.articles || []));
+            setTotalResults(parseddata.totalResults || 0);
+        } catch (error) {
+            console.error('Error fetching more news data', error);
+        }
     };
 
     return (
@@ -296,4 +304,3 @@ News.propTypes = {
 };
 
 export default News;
-
